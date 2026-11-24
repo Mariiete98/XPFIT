@@ -1,0 +1,656 @@
+/* =====================================================================
+   XPFit · estilos (estilo gimnasio moderno)
+   Cómo leer este archivo, de arriba abajo:
+     1. Variables (colores y medidas que reutilizamos)
+     2. Base (tipografía y reglas generales)
+     3. Animaciones (los "efectos" se definen aquí y se activan con JS)
+     4. Piezas de la página (cabecera, hero, cinta, tarjetas...)
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   1. VARIABLES
+   Una variable se escribe con -- y se usa con var(--nombre).
+   Si quieres cambiar un color en toda la web, lo cambias solo aquí.
+   --------------------------------------------------------------------- */
+:root {
+  --magenta: #E5007D;        /* color estrella: contornos, cinta, botones */
+  --morado: #7C3AED;         /* color de marca del brief (brillos y fondos) */
+  --acento: #22D3EE;         /* cian: XP, progreso y enlaces (combina con magenta y morado) */
+  --lila: #C4B5FD;           /* lila claro: etiquetas y detalles suaves */
+  --fondo: #0F0F1A;          /* fondo de la web */
+  --panel: #181829;          /* fondo de las tarjetas */
+  --borde: #2A2A44;
+  --texto: #F5F5FA;
+  --texto-suave: #B8B8CC;
+  --ancho: 1080px;
+}
+
+
+/* ---------------------------------------------------------------------
+   2. BASE
+   --------------------------------------------------------------------- */
+
+/* Hace que width/height incluyan el padding: así las medidas son más fáciles. */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;   /* al pulsar un enlace del menú, baja suavemente */
+  scroll-padding-top: 72px;  /* deja hueco para que la cabecera fija no tape el título */
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  /* TIPOGRAFÍA: probamos primero Century Gothic (si el ordenador la tiene).
+     Si no, usamos Questrial (la cargamos desde Google Fonts en el HTML).
+     Si tampoco, cualquier sans-serif. */
+  font-family: "Century Gothic", "Questrial", "Segoe UI", sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;        /* evita que algo de la animación cree scroll lateral */
+}
+
+/* TÍTULOS: todos en mayúsculas y con letras separadas 1-2 px. */
+h1, h2, h3 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0 0 .5em;
+}
+h3 { letter-spacing: 1px; font-size: 1.15rem; }
+
+/* H1: 75 px, peso 600, line-height 1.
+   clamp(mínimo, ideal, máximo) hace que en móvil se encoja solo
+   (75 px no cabría en una pantalla de 375 px) y en escritorio llegue a 75 px. */
+h1 {
+  font-size: clamp(2.2rem, 9vw, 75px);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* H2: 40 px (también adaptable a móvil). */
+h2 {
+  font-size: clamp(1.7rem, 5.5vw, 40px);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+/* Subtítulos: 24 px, peso 400. Usamos la clase .subtitulo en los párrafos. */
+.subtitulo {
+  font-size: clamp(1.05rem, 3.4vw, 24px);
+  font-weight: 400;
+  color: var(--texto-suave);
+  line-height: 1.4;
+}
+
+.suave { color: var(--texto-suave); }
+a { color: var(--acento); }
+
+/* Anillo visible al navegar con teclado (accesibilidad). */
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; }
+
+/* .contenedor centra el contenido y deja 16 px de margen en los lados. */
+.contenedor { width: min(100% - 32px, var(--ancho)); margin-inline: auto; }
+section { padding: 72px 0; }
+
+
+/* ---------------------------------------------------------------------
+   3. ANIMACIONES
+   Idea general: el CSS dice cómo se ve el elemento ANTES (escondido) y
+   DESPUÉS (con la clase .visible). El JavaScript (js/animaciones.js)
+   solo añade la clase .visible cuando el elemento entra en pantalla.
+
+   Todo esto va dentro de "html.js": esa clase la pone un mini-script
+   del <head>. Así, si el JavaScript falla, el texto se ve igualmente
+   (nunca se queda invisible).
+   --------------------------------------------------------------------- */
+
+/* 3.1 skewIn para los H2: empiezan transparentes, torcidos y a la izquierda. */
+html.js [data-skew] {
+  opacity: 0;
+  transform: translateX(-80px) skewX(-30deg);
+  transition: opacity .8s ease, transform .8s ease;   /* dura 0,8 s */
+}
+html.js [data-skew].visible {
+  opacity: 1;
+  transform: none;           /* "none" = recto y en su sitio */
+}
+
+/* 3.2 fadeInUp: empiezan 40 px más abajo y transparentes, y suben. */
+html.js [data-fade] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .7s ease, transform .7s ease;
+  /* El retraso escalonado (un poco más para cada hermano) lo pone el JS. */
+}
+html.js [data-fade].visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* 3.3 Cursor "|" de la máquina de escribir: parpadea sin parar. */
+@keyframes parpadeo {
+  0%, 49%   { opacity: 1; }   /* visible la primera mitad del ciclo */
+  50%, 100% { opacity: 0; }   /* invisible la segunda mitad */
+}
+
+/* 3.4 Cinta que se desplaza: mueve el contenido hacia la izquierda.
+   Movemos justo -50 % porque el texto está escrito DOS veces seguidas:
+   cuando termina la primera copia, la segunda ocupa su lugar y el bucle
+   no se nota. */
+@keyframes desplazar {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Si la persona pide "reducir movimiento" en su sistema, lo respetamos. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  html.js [data-skew], html.js [data-fade] {
+    opacity: 1; transform: none; transition: none;
+  }
+  .cinta-pista { animation: none !important; }
+  .trazo { animation: none !important; stroke-dashoffset: 0; }   /* contorno ya dibujado */
+  .entrenador, .entrenador .detalle { transition: none; }
+  .cara * { animation: none !important; }               /* caras quietas */
+  .cursor { animation: none !important; }
+}
+
+
+/* ---------------------------------------------------------------------
+   4. PIEZAS DE LA PÁGINA
+   --------------------------------------------------------------------- */
+
+/* --- Botón ---------------------------------------------------------- */
+.boton {
+  display: inline-block;
+  padding: 16px 36px;
+  background: var(--magenta);
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  border: 2px solid var(--magenta);
+  border-radius: 4px;                /* esquinas casi rectas: look gimnasio */
+  transition: background .2s, color .2s, transform .2s;
+}
+.boton:hover { background: transparent; color: var(--magenta); transform: translateY(-2px); }
+
+/* --- Etiquetas pequeñas ("Fase 1", "En curso"...) -------------------- */
+.etiqueta {
+  display: inline-block; padding: 2px 10px; border-radius: 3px;
+  font-size: .75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  background: rgba(196, 181, 253, .12); color: var(--lila); border: 1px solid var(--lila);
+}
+.etiqueta.xp { background: rgba(34, 211, 238, .12); color: var(--acento); border-color: var(--acento); }
+
+/* --- Cabecera fija --------------------------------------------------- */
+.cabecera {
+  position: sticky; top: 0; z-index: 10;          /* se queda arriba al hacer scroll */
+  background: rgba(15, 15, 26, .92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--borde);
+}
+.cabecera .contenedor {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 12px 0; flex-wrap: wrap;
+}
+.logo { font-weight: 600; font-size: 1.4rem; color: var(--texto); text-decoration: none; letter-spacing: 2px; }
+.logo span { color: var(--magenta); }
+.nav { display: flex; gap: 4px 20px; flex-wrap: wrap; }
+.nav a {
+  color: var(--texto-suave); text-decoration: none; text-transform: uppercase;
+  letter-spacing: 1px; font-size: .85rem; padding: 6px 2px;
+}
+.nav a:hover { color: var(--magenta); }
+
+/* --- Hero (la portada) ----------------------------------------------- */
+.hero {
+  padding: 0;                 /* el espacio lo gestiona la escena parallax (ver más abajo) */
+  background:
+    radial-gradient(600px 320px at 85% 0%, rgba(229, 0, 125, .28), transparent),
+    radial-gradient(500px 260px at 0% 100%, rgba(124, 58, 237, .25), transparent);
+}
+/* El H1 es blanco (hereda el color del texto). */
+.hero h1 { color: #fff; margin-bottom: 12px; }
+
+/* La palabra grande con SOLO contorno:
+   - color: transparent  -> el relleno desaparece
+   - -webkit-text-stroke -> dibuja el borde de las letras (2 px, magenta)
+   display:block la baja a una línea propia, debajo del H1. */
+.contorno {
+  display: block;
+  font-size: clamp(2.6rem, 14vw, 130px);
+  font-weight: 600;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--magenta);
+}
+.hero .subtitulo { max-width: 28em; margin: 20px 0 32px; }
+.hero .nota { margin-top: 24px; font-size: .9rem; color: var(--texto-suave); max-width: 46ch; }
+.levelup {
+  margin-top: 28px; padding: 14px 18px; max-width: 460px;
+  background: var(--panel); border-left: 4px solid var(--magenta); font-size: .95rem;
+}
+
+/* --- Hero con efecto PARALLAX -------------------------------------------
+   Idea: la portada es MUY alta (240 % de la pantalla), pero dentro hay una
+   "escena" pegada arriba (position: sticky) que se queda quieta mientras
+   haces scroll. Lo que cambia es una variable, --p, que el JavaScript
+   actualiza: va de 0 (arriba del todo) a 1 (al final de la portada).
+   El CSS usa --p para mover cada capa a distinta velocidad (eso es el
+   parallax) y para hacer aparecer el texto y el botón.
+   Todo esto solo se activa con la clase html.js; sin JavaScript, la
+   portada es normal y el texto se ve desde el principio. */
+
+/* Sin JS: portada normal, con el texto visible. */
+.hero-escena { position: relative; overflow: hidden; --p: 0; min-height: 100svh; }
+.hero-contenido { position: relative; z-index: 2; padding: 110px 0 80px; }
+.capa, .hero-aviso { display: none; }       /* las capas decorativas solo existen con JS */
+
+/* Con JS: se activa el parallax. */
+html.js .hero-pista { height: 240vh; }      /* altura "extra" para poder hacer scroll */
+html.js .hero-escena {
+  position: sticky; top: 0;                 /* se queda pegada arriba mientras haces scroll */
+  height: 100svh;
+  /* --t = cuánto se ve el texto (0 = nada, 1 = todo).
+     Empieza a aparecer cuando --p supera 0,2 y está completo hacia 0,53. */
+  --t: clamp(0, calc((var(--p) - .2) * 3), 1);
+}
+html.js .capa { display: block; position: absolute; inset: 0; pointer-events: none; }
+html.js .hero-aviso { display: block; }
+
+/* Capa 1 · fondo: una cuadrícula retro (como un mapa de videojuego).
+   Se mueve poco (120 px en todo el recorrido): parece lejana. */
+.capa-fondo {
+  inset: -10% 0 -30% 0 !important;
+  background-image:
+    linear-gradient(rgba(229, 0, 125, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, .18) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: translateY(calc(var(--p) * -120px));
+}
+
+/* Capa 2 · medio: orbes de XP y un mando. Se mueven más (300 px). */
+.capa-medio { transform: translateY(calc(var(--p) * -300px)); }
+.orbe {
+  position: absolute; left: var(--x); top: var(--y);
+  width: 54px; height: 54px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 600; font-size: .85rem; letter-spacing: 1px; color: var(--fondo);
+  background: var(--acento);
+  box-shadow: 0 0 24px rgba(34, 211, 238, .6);
+  animation: flotar 4s ease-in-out infinite;       /* movimiento propio, además del scroll */
+}
+.orbe:nth-child(2n) { background: var(--lila); box-shadow: 0 0 24px rgba(196, 181, 253, .6); animation-delay: -1.5s; }
+.orbe:nth-child(3n) { width: 38px; height: 38px; font-size: .7rem; animation-delay: -2.5s; }
+@keyframes flotar { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
+
+.mando {
+  position: absolute; right: 6%; top: 18%;
+  width: min(34vw, 220px); height: auto;
+  fill: rgba(34, 211, 238, .08); stroke: var(--acento); stroke-width: 3; stroke-linejoin: round;
+  transform: rotate(12deg);
+  animation: flotar 5s ease-in-out infinite;
+}
+
+/* Capa 3 · frente: la mancuerna. Es lo que "viaja": con el scroll cruza la
+   pantalla de izquierda a derecha rodando (translateX + rotate).
+   vw = 1 % del ancho de la pantalla. */
+.mancuerna {
+  position: absolute; left: 0; bottom: 6%;
+  width: min(70vw, 460px); height: auto;
+  fill: rgba(229, 0, 125, .12); stroke: var(--magenta); stroke-width: 4; stroke-linejoin: round;
+  transform: translateX(calc(-35vw + var(--p) * 125vw)) rotate(calc(-20deg + var(--p) * 380deg));
+  filter: drop-shadow(0 0 14px rgba(229, 0, 125, .6));
+}
+
+/* El contenedor del texto ocupa toda la escena y centra su contenido. */
+html.js .hero-contenido {
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+/* El TÍTULO (h1) se ve desde el principio: al cargar la página hace un
+   fundido de opacidad (de 0 a 1) durante 1,6 s. "both" = empieza ya
+   transparente y se queda visible al terminar. */
+html.js .hero h1 { animation: aparecer 1.6s ease both; }
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+
+/* El RESTO (subtítulo, botón, notas) aparece con el scroll, según --t:
+   sube 50 px y se hace visible. Antes de que se vea, no se puede pulsar. */
+html.js .hero-resto {
+  opacity: var(--t);
+  transform: translateY(calc((1 - var(--t)) * 50px));
+}
+html.js .hero:not(.contenido-visible) .hero-resto { pointer-events: none; }
+
+/* Aviso inicial "Desliza": se apaga enseguida al empezar a hacer scroll. */
+.hero-aviso {
+  position: absolute; z-index: 3; left: 0; right: 0; bottom: 28px; text-align: center;
+  text-transform: uppercase; letter-spacing: 3px; font-size: .85rem; color: var(--texto-suave);
+  opacity: clamp(0, calc(1 - var(--p) * 8), 1);
+  animation: flotar 1.6s ease-in-out infinite;
+}
+
+/* Si el sistema pide "reducir movimiento": portada normal, sin parallax. */
+.hero.sin-parallax .hero-pista { height: auto !important; }
+.hero.sin-parallax .hero-escena { position: relative; height: auto; min-height: 0; --t: 1; }
+.hero.sin-parallax .capa-fondo, .hero.sin-parallax .capa-medio, .hero.sin-parallax .mancuerna { transform: none; }
+.hero.sin-parallax .mancuerna, .hero.sin-parallax .hero-aviso { display: none; }
+.hero.sin-parallax .hero-contenido { height: auto; padding: 110px 0 80px; }
+.hero.sin-parallax .hero-resto { opacity: 1; transform: none; pointer-events: auto; }
+.hero.sin-parallax h1 { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .orbe, .mando, .hero-aviso, html.js .hero h1 { animation: none; }
+}
+
+/* --- Cinta horizontal en bucle --------------------------------------- */
+.cinta {
+  background: var(--magenta);
+  color: #000;
+  overflow: hidden;            /* esconde lo que se sale por los lados */
+  white-space: nowrap;         /* todo el texto en una sola línea */
+  padding: 14px 0;
+  transform: rotate(-1.5deg);  /* ligera inclinación, muy de gimnasio moderno */
+  margin: 24px -10px;          /* margen negativo: cubre toda la pantalla pese a girar */
+}
+/* La pista es una fila (flex) que contiene los dos grupos. width:max-content
+   hace que mida lo que miden sus hijos juntos (dos grupos).
+   "linear" = velocidad constante, sin acelerar ni frenar.
+   "infinite" = se repite sin parar. */
+.cinta-pista {
+  display: flex;
+  width: max-content;
+  animation: desplazar 24s linear infinite;
+}
+/* Cada grupo mide AL MENOS el ancho de la pantalla (100vw) para que, mientras
+   se desplaza, nunca quede un hueco vacío por el lado derecho.
+   flex-shrink:0 impide que se encoja. space-around reparte el espacio. */
+.cinta-grupo {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  min-width: calc(100vw + 40px);
+}
+.cinta span {
+  display: inline-block;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.1rem;
+}
+/* El separador: un círculo negro hecho con CSS (sin imagen). */
+.cinta .punto {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #000; margin: 0 28px; vertical-align: middle;
+}
+
+/* --- Título grande con máquina de escribir --------------------------- */
+.maquina {
+  margin: 0 0 24px;
+  font-size: clamp(2.2rem, 10vw, 90px);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: transparent;                          /* letras huecas... */
+  -webkit-text-stroke: 2px var(--magenta);     /* ...solo con contorno */
+  min-height: 1.1em;                           /* reserva sitio para que la página no "salte" al escribir */
+}
+.cursor {
+  display: inline-block;
+  color: var(--magenta);
+  -webkit-text-stroke: 0;                      /* el cursor sí va relleno */
+  animation: parpadeo 1s step-end infinite;    /* usa la animación de arriba */
+}
+
+/* --- Rejillas y tarjetas --------------------------------------------- */
+/* auto-fit: tantas columnas como quepan (mín. 260 px). En móvil, 1 columna. */
+.rejilla { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 28px; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; padding: 24px; }
+.tarjeta ul { padding-left: 20px; margin: 12px 0 0; color: var(--texto-suave); }
+.tarjeta.proximamente { border-style: dashed; }
+
+.principios { margin-top: 32px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.principios div { padding: 14px 18px; background: rgba(34, 211, 238, .07); border: 1px solid rgba(34, 211, 238, .3); border-radius: 6px; }
+.principios strong { color: var(--acento); }
+
+/* --- Hoja de ruta ----------------------------------------------------- */
+.ruta { list-style: none; margin: 28px 0 0; padding: 0 0 0 24px; border-left: 3px solid var(--borde); }
+.ruta li { position: relative; padding: 0 0 28px 20px; }
+.ruta li::before {     /* el circulito de cada paso */
+  content: ""; position: absolute; left: -34px; top: 6px; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--fondo); border: 3px solid var(--magenta);
+}
+.ruta li.actual::before { background: var(--acento); border-color: var(--acento); }
+.ruta .tec { font-size: .85rem; color: var(--texto-suave); }
+
+/* --- Equipo ----------------------------------------------------------- */
+.persona { text-decoration: none; color: inherit; display: block; transition: border-color .2s, transform .2s; }
+.persona:hover { border-color: var(--magenta); transform: translateY(-3px); }
+/* --- Cara animada de cada entrenador ------------------------------------
+   .cara es el "marco" cuadrado con degradado; dentro va un <svg> con la cara.
+   Cada pieza de la cara (ojos, cejas, gota...) tiene una clase y una animación. */
+.cara {
+  width: 112px; height: 112px; border-radius: 12px; margin: 0 auto 14px;
+  overflow: hidden;                       /* recorta lo que se salga del marco */
+  background: linear-gradient(135deg, var(--magenta), var(--morado));
+}
+.cara svg { display: block; width: 100%; height: 100%; }
+
+/* transform-box + transform-origin: hacen que cada pieza gire/escale
+   desde SU propio centro (si no, lo haría desde la esquina del dibujo). */
+.cara .flota, .cara .parpadeo, .cara .cejas, .cara .gota, .cara .aura-zen {
+  transform-box: fill-box; transform-origin: center;
+}
+
+/* Respirar: toda la cabeza sube y baja 2 px, muy despacio. */
+.cara .flota { animation: respirar 3.2s ease-in-out infinite; }
+.cara .flota.rapido { animation-duration: 1.2s; }          /* Paúl, cardio: más agitado */
+@keyframes respirar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+
+/* Parpadear: los ojos se aplastan un instante cada 4 s. */
+.cara .parpadeo { animation: parpadear 4s infinite; }
+.cara .parpadeo.lento { animation-duration: 6s; }          /* Mario, movilidad: más sereno */
+@keyframes parpadear { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+
+/* Cejas "de líder": se levantan y bajan, como mirando a su equipo. */
+.cara .cejas { animation: cejas 2.6s ease-in-out infinite; }
+@keyframes cejas { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* Gota de sudor (Paúl): cae y desaparece. */
+.cara .gota { animation: caer 2s ease-in infinite; }
+@keyframes caer { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(22px); opacity: 0; } }
+
+/* Aura serena (Mario): un aro que late suavemente. */
+.cara .aura-zen { animation: latir 3.6s ease-in-out infinite; }
+@keyframes latir { 0%, 100% { transform: scale(1); opacity: .35; } 50% { transform: scale(1.12); opacity: .7; } }
+.persona .ver { color: var(--acento); font-weight: 600; font-size: .9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* --- Títulos de sección: SVG con trazo que se dibuja ------------------- */
+/* El lienzo SVG tiene una altura fija que se adapta a la pantalla
+   (mínimo 44 px, máximo 80 px); el ancho se calcula solo por la proporción
+   del viewBox. max-width:100% evita que se salga en pantallas pequeñas.
+   overflow:visible: si una letra se sale un poco del lienzo, no se corta. */
+.titulo-svg {
+  display: block;
+  height: clamp(44px, 9vw, 80px);
+  width: auto;
+  max-width: 100%;
+  overflow: visible;
+}
+/* En Contacto todo va centrado, así que centramos también el lienzo. */
+.contacto .titulo-svg { margin-inline: auto; }
+/* El <h2> que envuelve al SVG no necesita margen propio. */
+h2 .titulo-svg { margin-bottom: 4px; }
+
+/* El texto del SVG. Paso a paso:
+   1) fill: none            -> sin relleno: las letras quedan huecas
+   2) stroke                -> el color del contorno (magenta)
+   3) stroke-width: 1.2     -> grosor del contorno (en unidades del viewBox)
+   4) stroke-dasharray: 600 -> convierte la línea en "600 de trazo, 600 de hueco"
+   5) stroke-dashoffset: 600-> desplaza ese patrón: al empezar solo se ve hueco,
+                               es decir, el contorno está invisible
+   6) animation             -> mueve el dashoffset de 600 a 0 (ver @keyframes
+                               "dibujar"): el trazo va apareciendo, como si
+                               alguien lo dibujase. Dura 5 s, "linear" (ritmo
+                               constante) e "infinite" (en bucle).
+   Nota: 600 es un número un poco mayor que el contorno de cada letra. */
+.trazo {
+  font-family: "Century Gothic", "Questrial", sans-serif;
+  font-size: 100px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  fill: none;
+  stroke: var(--magenta);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: dibujar 5s linear infinite;
+}
+
+/* @keyframes define los "fotogramas" de la animación:
+   from = al empezar (contorno oculto), to = al terminar (contorno completo). */
+@keyframes dibujar {
+  from { stroke-dashoffset: 600; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* --- Avatar: evolución según XP ----------------------------------------- */
+/* Zona principal: el personaje a la izquierda y el control a la derecha
+   (apilados en móvil gracias a auto-fit). */
+.avatar-zona {
+  display: grid; gap: 28px; align-items: center; margin-top: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; padding: 28px;
+}
+
+/* Cada etapa define un color; el avatar lo usa con var(--color-etapa).
+   La clase etapa-N la cambia el JavaScript. */
+.avatar-visor { --color-etapa: #6B7BA4; text-align: center; }
+.avatar-visor.etapa-2 { --color-etapa: var(--acento); }
+.avatar-visor.etapa-3 { --color-etapa: var(--magenta); }
+.avatar-visor.etapa-4 { --color-etapa: var(--lila); }
+
+.avatar-svg { width: 180px; max-width: 70%; height: auto; overflow: visible; }
+.avatar-svg .cuerpo, .avatar-svg .miembro, .avatar-svg .cabeza {
+  fill: var(--color-etapa); transition: fill .5s;
+}
+.avatar-svg .cabeza { stroke: var(--fondo); stroke-width: 3; }
+.avatar-svg .aura { fill: var(--color-etapa); opacity: .08; transition: opacity .5s, fill .5s; }
+.avatar-svg .banda  { fill: #fff; display: none; }                 /* accesorio: etapa 2+ */
+.avatar-svg .capa   { fill: var(--morado); display: none; }        /* accesorio: etapa 3+ */
+.avatar-svg .corona { fill: #fff; display: none; }         /* accesorio: etapa 4 */
+.etapa-2 .banda, .etapa-3 .banda, .etapa-4 .banda { display: inline; }
+.etapa-3 .capa, .etapa-4 .capa { display: inline; }
+.etapa-4 .corona { display: inline; }
+.etapa-4 .aura { opacity: .3; }                                    /* la leyenda brilla */
+
+.avatar-etapa {
+  margin: 8px 0 0; font-size: 1.6rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--color-etapa);
+}
+.avatar-nivel { margin: 0; }
+
+.avatar-panel label { font-size: .85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-suave); }
+.xp-cifra { margin: 4px 0 12px; font-size: 2.4rem; font-weight: 600; color: var(--acento); }
+.xp-cifra output { font-size: inherit; }
+.avatar-panel input[type="range"] { width: 100%; accent-color: var(--magenta); }
+.xp-barra { height: 12px; border-radius: 999px; background: var(--borde); overflow: hidden; margin: 16px 0; }
+.xp-barra span { display: block; height: 100%; width: 0; background: var(--acento); transition: width .3s ease; }
+
+/* Las cuatro etapas: la que corresponde a tus XP se resalta. */
+.etapas { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.etapas li { background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; padding: 20px; opacity: .6; }
+.etapas li.activa { opacity: 1; border-color: var(--magenta); box-shadow: 0 0 24px rgba(229, 0, 125, .25); }
+
+/* --- Equipo: carrusel -------------------------------------------------- */
+.carrusel { margin-top: 12px; }
+
+/* La pista es una fila de fichas que se desliza de lado (overflow-x: auto).
+   - scroll-snap: al soltar, la ficha más cercana se queda centrada.
+   - El padding lateral (50% - media ficha) deja a cada ficha poder
+     colocarse en el centro, incluso la primera y la última.
+   - El padding vertical deja sitio para que la ficha ampliada no se corte.
+   - position:relative hace que el JS pueda medir la posición de cada ficha. */
+.carrusel-pista {
+  --ancho-ficha: min(78vw, 300px);
+  position: relative;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 40px calc(50% - var(--ancho-ficha) / 2);
+  scrollbar-width: none;            /* oculta la barra de scroll (Firefox) */
+}
+.carrusel-pista::-webkit-scrollbar { display: none; }   /* ídem (Chrome, Edge, Safari) */
+
+/* Ficha NO seleccionada: pequeña y apagada. */
+.entrenador {
+  flex: 0 0 var(--ancho-ficha);     /* ancho fijo, no se encoge */
+  scroll-snap-align: center;
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  padding: 24px;
+  cursor: pointer;
+  transform: scale(.88);
+  opacity: .55;
+  transition: transform .4s ease, opacity .4s ease, border-color .4s, box-shadow .4s;
+}
+.entrenador .rol { color: var(--magenta); text-transform: uppercase; letter-spacing: 1px; font-size: .85rem; margin: 0; }
+
+/* Ficha SELECCIONADA (clase "activa" la pone el JS): se amplía y se ilumina. */
+.entrenador.activa {
+  transform: scale(1.08);
+  opacity: 1;
+  border-color: var(--magenta);
+  box-shadow: 0 0 30px rgba(229, 0, 125, .3);
+}
+
+/* El detalle (descripción y enlace) está escondido y solo se despliega
+   en la ficha activa. visibility:hidden evita que el enlace oculto
+   reciba el foco con el teclado. */
+.entrenador .detalle {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: max-height .4s ease, opacity .4s ease;
+}
+.entrenador.activa .detalle { max-height: 220px; opacity: 1; visibility: visible; }
+.entrenador .ver { color: var(--acento); font-weight: 600; font-size: .9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Botones anterior / siguiente. */
+.carrusel-controles { display: flex; justify-content: center; gap: 16px; }
+.carrusel-btn {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: transparent; color: var(--magenta);
+  border: 2px solid var(--magenta);
+  font-size: 1.6rem; line-height: 1; cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.carrusel-btn:hover { background: var(--magenta); color: #fff; }
+
+/* --- Contacto y pie --------------------------------------------------- */
+.contacto { text-align: center; background: linear-gradient(180deg, transparent, rgba(229, 0, 125, .15)); }
+.contacto .subtitulo { max-width: 36em; margin-inline: auto; margin-bottom: 28px; }
+.pie { padding: 28px 0 40px; border-top: 1px solid var(--borde); color: var(--texto-suave); font-size: .9rem; text-align: center; }
+
+/* --- Fichas de personaje (páginas de equipo/) ------------------------- */
+.ficha { padding: 48px 0 72px; }
+.ficha .volver { display: inline-block; margin-bottom: 24px; font-weight: 600; }
+.ficha-cabecera { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 28px; }
+.ficha-cabecera h1 { font-size: clamp(1.8rem, 7vw, 48px); margin-bottom: 4px; }
+.ficha-cabecera .cara { width: 120px; height: 120px; margin: 0; }
+.stats { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+/* En pantallas grandes damos más aire a las secciones. */
+@media (min-width: 720px) {
+  section { padding: 96px 0; }
+}

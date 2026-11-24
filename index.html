@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XPFit · Convierte tus entrenos en un videojuego</title>
+  <meta name="description" content="XPFit transforma entrenos, partidos y viajes en una partida: gana XP, sube de nivel y compite en clan con tus amigos.">
+
+  <!-- PASO 1: cargamos la tipografía Questrial desde Google Fonts.
+       (Si el ordenador tiene Century Gothic, se usará esa; ver estilos.css). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+
+  <!-- PASO 2: nuestros estilos. -->
+  <link rel="stylesheet" href="css/estilos.css">
+
+  <!-- PASO 3: marca la página como "con JavaScript". Las animaciones del CSS
+       solo se activan si esta clase existe, así nada se queda invisible
+       si el JS falla. -->
+  <script>document.documentElement.classList.add("js");</script>
+
+  <!-- PASO 4: nuestro JavaScript. "defer" = se ejecuta cuando la página ya cargó. -->
+  <script src="js/animaciones.js" defer></script>
+</head>
+<body>
+
+  <header class="cabecera">
+    <div class="contenedor">
+      <a class="logo" href="#inicio">XP<span>FIT</span></a>
+      <nav class="nav" aria-label="Principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#avatar">Avatar</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ INICIO (hero) ============ -->
+    <section class="hero" id="inicio">
+      <!-- HERO CON PARALLAX. Estructura (de fuera hacia dentro):
+           .hero-pista  -> caja muy alta que da "recorrido" para hacer scroll
+           .hero-escena -> la escena, pegada arriba mientras haces scroll
+                           (position: sticky). Aquí el JS guarda --p (0 a 1).
+             .capa-fondo  -> cuadrícula retro (se mueve poco)
+             .capa-medio  -> orbes de XP y mando (se mueven más)
+             .capa-frente -> mancuerna que cruza la pantalla rodando
+             .hero-contenido -> título, subtítulo y botón (aparecen con el scroll)
+           Las capas son decoración: aria-hidden="true". -->
+      <div class="hero-pista">
+        <div class="hero-escena">
+
+          <div class="capa capa-fondo" aria-hidden="true"></div>
+
+          <div class="capa capa-medio" aria-hidden="true">
+            <!-- Orbes de XP: --x e --y son su posición (en %). -->
+            <span class="orbe" style="--x:8%;  --y:22%;">XP</span>
+            <span class="orbe" style="--x:24%; --y:62%;">XP</span>
+            <span class="orbe" style="--x:46%; --y:84%;">XP</span>
+            <span class="orbe" style="--x:70%; --y:70%;">XP</span>
+            <span class="orbe" style="--x:88%; --y:46%;">XP</span>
+            <span class="orbe" style="--x:60%; --y:12%;">XP</span>
+            <!-- Mando de consola dibujado con SVG: cuerpo, cruceta y 4 botones. -->
+            <svg class="mando" viewBox="0 0 240 150">
+              <path d="M60 40 Q40 40 30 80 L20 120 Q18 140 38 138 Q52 136 62 120 L80 104 L160 104 L178 120 Q188 136 202 138 Q222 140 220 120 L210 80 Q200 40 180 40 Z"/>
+              <path d="M66 62 h8 v8 h8 v8 h-8 v8 h-8 v-8 h-8 v-8 h8z"/>
+              <circle cx="165" cy="64" r="6"/><circle cx="182" cy="78" r="6"/>
+              <circle cx="148" cy="78" r="6"/><circle cx="165" cy="92" r="6"/>
+            </svg>
+          </div>
+
+          <div class="capa capa-frente" aria-hidden="true">
+            <!-- Mancuerna: una barra y tres placas por lado. -->
+            <svg class="mancuerna" viewBox="0 0 420 140">
+              <rect x="150" y="62" width="120" height="16" rx="4"/>
+              <rect x="118" y="40" width="32" height="60" rx="6"/>
+              <rect x="84"  y="24" width="34" height="92" rx="6"/>
+              <rect x="60"  y="56" width="24" height="28" rx="4"/>
+              <rect x="270" y="40" width="32" height="60" rx="6"/>
+              <rect x="302" y="24" width="34" height="92" rx="6"/>
+              <rect x="336" y="56" width="24" height="28" rx="4"/>
+            </svg>
+          </div>
+
+          <p class="hero-aviso" aria-hidden="true">Desliza para jugar ↓</p>
+
+          <div class="hero-contenido">
+      <div class="contenedor">
+        <!-- H1 blanco en dos líneas (el <br> parte la línea) y, debajo,
+             la palabra grande solo con contorno magenta (clase "contorno"). -->
+        <h1>
+          Convierte tus<br>entrenos en un
+          <span class="contorno">videojuego</span>
+        </h1>
+        <!-- El H1 (arriba) se ve desde el principio con un fundido de opacidad.
+             Todo lo que va dentro de .hero-resto aparece poco a poco con el scroll. -->
+        <div class="hero-resto">
+          <p class="subtitulo">Gana XP, sube de nivel y compite con tus amigos.</p>
+          <a class="boton" href="#contacto">Entra en el juego</a>
+          <p class="nota">Para quien ya entrena (gym, fútbol, pádel, running) y quiere un motivo para volver. También si juegas solo.</p>
+          <p class="levelup">¡LEVEL UP! 🎉 Ya eres nivel 12. Tus piernas han desbloqueado una nueva habilidad: subir escaleras sin sufrir.</p>
+        </div>
+      </div>
+    
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CINTA EN BUCLE ============
+         Truco para que NUNCA se vea vacía al final:
+         - Hay DOS grupos idénticos (.cinta-grupo), uno detrás del otro.
+         - Cada grupo mide como mínimo el ancho de la pantalla (ver estilos.css).
+         - El CSS mueve la pista justo la mitad (= un grupo). En ese momento
+           el segundo grupo ocupa el sitio del primero y vuelve a empezar,
+           sin saltos ni huecos.
+         aria-hidden="true": es decoración, el lector de pantalla la ignora. -->
+    <div class="cinta" aria-hidden="true">
+      <div class="cinta-pista">
+
+        <!-- Grupo 1 -->
+        <div class="cinta-grupo">
+          <span>Gana XP</span><span class="punto"></span>
+          <span>Sube de nivel</span><span class="punto"></span>
+          <span>Crea tu clan</span><span class="punto"></span>
+          <span>Sin presiones</span><span class="punto"></span>
+          <span>Gana XP</span><span class="punto"></span>
+          <span>Sube de nivel</span><span class="punto"></span>
+          <span>Crea tu clan</span><span class="punto"></span>
+          <span>Sin presiones</span><span class="punto"></span>
+        </div>
+
+        <!-- Grupo 2: copia exacta del grupo 1 -->
+        <div class="cinta-grupo">
+          <span>Gana XP</span><span class="punto"></span>
+          <span>Sube de nivel</span><span class="punto"></span>
+          <span>Crea tu clan</span><span class="punto"></span>
+          <span>Sin presiones</span><span class="punto"></span>
+          <span>Gana XP</span><span class="punto"></span>
+          <span>Sube de nivel</span><span class="punto"></span>
+          <span>Crea tu clan</span><span class="punto"></span>
+          <span>Sin presiones</span><span class="punto"></span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ SERVICIOS ============
+         data-skew  -> el título entra con el efecto skewIn
+         data-fade  -> el bloque entra con fadeInUp (con retraso escalonado) -->
+    <section id="servicios">
+      <div class="contenedor">
+        <!-- TÍTULO CON TRAZO SVG (se repite igual en todas las secciones).
+             - Mantenemos el <h2> para que la página siga teniendo títulos
+               "de verdad" (buscadores y lectores de pantalla los entienden).
+             - Dentro va un <svg>: un lienzo de dibujo. viewBox="0 0 700 130"
+               es su sistema de coordenadas (700 de ancho x 130 de alto);
+               el navegador lo escala solo.
+             - <text> escribe la palabra dentro del lienzo: x="4" es el margen
+               izquierdo e y="100" la altura de la línea base de las letras.
+             - El aspecto (solo contorno, trazo que se dibuja en bucle) está
+               en estilos.css, en la clase "trazo".
+             - aria-label: lo que lee en voz alta un lector de pantalla. -->
+        <h2>
+          <svg class="titulo-svg" viewBox="0 0 700 130" role="img" aria-label="Servicios">
+            <text class="trazo" x="4" y="100">SERVICIOS</text>
+          </svg>
+        </h2>
+        <p class="subtitulo" data-fade>Entrenos, partidos y viajes se convierten en una partida.</p>
+
+        <div class="rejilla">
+          <!-- Fase 1: personaje y progresión -->
+          <article class="tarjeta" data-fade>
+            <span class="etiqueta xp">Fase 1</span>
+            <h3>Personaje y progresión</h3>
+            <p>Tu avatar crece con cada entreno.</p>
+            <ul>
+              <li>XP, niveles y estadísticas</li>
+              <li>Rachas, logros y jefes finales</li>
+              <li>Temporadas de 4-6 semanas con retos nuevos</li>
+            </ul>
+          </article>
+
+          <!-- Fase 2: clanes y retos entre amigos -->
+          <article class="tarjeta" data-fade>
+            <span class="etiqueta xp">Fase 2</span>
+            <h3>Clanes y retos entre amigos</h3>
+            <p>Entrenar es mejor en equipo (y con un poco de pique).</p>
+            <ul>
+              <li>Ranking del grupo y misiones cooperativas</li>
+              <li>Ligas y piques 1 contra 1</li>
+              <li>Modo solitario: compites contra tu yo del mes pasado</li>
+            </ul>
+          </article>
+
+          <article class="tarjeta proximamente" data-fade>
+            <span class="etiqueta">Próximamente · Fase 3</span>
+            <h3>Entrenador IA y Modo Viaje</h3>
+            <p>Misiones a tu medida y retos locales cuando estás en otra ciudad.</p>
+            <ul>
+              <li>Misiones personalizadas con IA</li>
+              <li>Modo Viaje: retos de la ciudad donde estés</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="principios">
+          <div data-fade><strong>Sin presiones.</strong> Una racha rota nunca se castiga. Los héroes también reaparecen.</div>
+          <div data-fade><strong>El descanso puntúa.</strong> Recuperarse también da XP.</div>
+          <div data-fade><strong>Constancia sobre volumen.</strong> Premiamos volver, no machacarse.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ AVATAR ============
+         Sustituye a la antigua sección "Proyectos". Muestra cómo el avatar
+         evoluciona según los XP que ganas entrenando.
+         La parte interactiva (el deslizador) se programa en js/animaciones.js
+         (PASO 6). Los números de XP son valores de EJEMPLO. -->
+    <section id="avatar">
+      <div class="contenedor">
+        <h2>
+          <svg class="titulo-svg" viewBox="0 0 520 130" role="img" aria-label="Avatar">
+            <text class="trazo" x="4" y="100">AVATAR</text>
+          </svg>
+        </h2>
+        <p class="subtitulo" data-fade>Tu personaje evoluciona con los puntos de experiencia que ganas en cada entreno.</p>
+
+        <div class="avatar-zona" data-fade>
+
+          <!-- Izquierda: el personaje. La clase "etapa-1" (o 2, 3, 4) la cambia el JS
+               y el CSS usa esa clase para cambiar color y accesorios. -->
+          <div class="avatar-visor etapa-1" id="avatar-visor">
+            <svg class="avatar-svg" viewBox="0 0 200 250" role="img" aria-label="Tu avatar">
+              <ellipse class="aura" cx="100" cy="135" rx="85" ry="105"/>
+              <path class="capa" d="M68 100 L132 100 L156 232 L44 232 Z"/>
+              <rect class="miembro" x="72" y="178" width="22" height="52" rx="8"/>
+              <rect class="miembro" x="106" y="178" width="22" height="52" rx="8"/>
+              <rect class="cuerpo" x="66" y="96" width="68" height="92" rx="16"/>
+              <rect class="miembro" x="42" y="104" width="22" height="64" rx="10"/>
+              <rect class="miembro" x="136" y="104" width="22" height="64" rx="10"/>
+              <circle class="cabeza" cx="100" cy="64" r="30"/>
+              <rect class="banda" x="70" y="50" width="60" height="9" rx="4"/>
+              <path class="corona" d="M72 38 L80 14 L100 32 L120 14 L128 38 Z"/>
+            </svg>
+            <p class="avatar-etapa" id="avatar-etapa">Novato</p>
+            <p class="avatar-nivel suave" id="avatar-nivel">Nivel 1</p>
+          </div>
+
+          <!-- Derecha: el control de XP. -->
+          <div class="avatar-panel">
+            <label for="xp-control">Prueba: mueve tus XP</label>
+            <p class="xp-cifra"><output id="xp-valor" for="xp-control">0</output> XP</p>
+            <input type="range" id="xp-control" min="0" max="1000" step="10" value="0">
+            <div class="xp-barra" aria-hidden="true"><span id="xp-relleno"></span></div>
+            <p class="suave" id="xp-texto">Te faltan 150 XP para ser Aprendiz.</p>
+          </div>
+        </div>
+
+        <!-- Las cuatro etapas. data-desde = XP necesarios para llegar a ella. -->
+        <ol class="etapas">
+          <li data-desde="0"><h3>Novato</h3><span class="etiqueta xp">Desde 0 XP</span><p class="suave">Empiezas la partida. Tu avatar estrena equipo.</p></li>
+          <li data-desde="150"><h3>Aprendiz</h3><span class="etiqueta xp">Desde 150 XP</span><p class="suave">Ya tienes rutina. Tu avatar se pone la cinta de la constancia.</p></li>
+          <li data-desde="400"><h3>Guerrero</h3><span class="etiqueta xp">Desde 400 XP</span><p class="suave">Tu esfuerzo se nota. Tu avatar desbloquea la capa.</p></li>
+          <li data-desde="800"><h3>Leyenda</h3><span class="etiqueta">Desde 800 XP</span><p class="suave">Ya eres referente del clan. Tu avatar luce corona y aura.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ EQUIPO (carrusel) ============
+         Tres entrenadores. La ficha activa (la del centro) se amplía.
+         Los botones, el clic en una ficha y las flechas del teclado cambian
+         la ficha activa: ver el bloque "Carrusel" en js/animaciones.js. -->
+    <section id="equipo">
+      <div class="contenedor">
+        <h2>
+          <svg class="titulo-svg" viewBox="0 0 660 130" role="img" aria-label="Tu equipo">
+            <text class="trazo" x="4" y="100">TU EQUIPO</text>
+          </svg>
+        </h2>
+        <p class="subtitulo" data-fade>Fuerza, cardio y movilidad. Elige a tu entrenador.</p>
+
+        <div class="carrusel" role="region" aria-roledescription="carrusel" aria-label="Equipo de entrenadores">
+
+          <!-- La pista: una fila de fichas que se desliza de lado. -->
+          <div class="carrusel-pista" tabindex="0">
+
+            <article class="entrenador">
+              <div class="cara">
+<svg viewBox="0 0 120 120" role="img" aria-label="Cara de David Guillera">
+<!-- David, fuerza: mandibula cuadrada, barba, cejas gruesas y camiseta sin mangas. Cada grupo con clase (flota, cejas, parpadeo) tiene su animacion en estilos.css. -->
+<path d="M8 120 Q12 90 60 88 Q108 90 112 120 Z" fill="#12121f"/>
+<rect x="50" y="76" width="20" height="18" fill="#B98456"/>
+<g class="flota">
+<circle cx="33" cy="58" r="6" fill="#C99565"/><circle cx="87" cy="58" r="6" fill="#C99565"/>
+<path d="M33 50 Q33 26 60 24 Q87 26 87 50 Q86 80 60 88 Q34 80 33 50Z" fill="#D9A673"/>
+<path d="M33 46 Q34 24 60 22 Q86 24 87 46 Q78 34 60 34 Q42 34 33 46Z" fill="#241713"/>
+<path d="M33 58 Q36 88 60 90 Q84 88 87 58 Q80 76 60 76 Q40 76 33 58Z" fill="#241713"/>
+<g class="cejas"><path d="M38 43 L56 45" stroke="#241713" stroke-width="5" stroke-linecap="round"/><path d="M82 43 L64 45" stroke="#241713" stroke-width="5" stroke-linecap="round"/></g>
+<g class="parpadeo"><ellipse cx="48" cy="52" rx="5" ry="5.5" fill="#fff"/><ellipse cx="72" cy="52" rx="5" ry="5.5" fill="#fff"/><circle cx="49" cy="53" r="2.6" fill="#1b1b2a"/><circle cx="73" cy="53" r="2.6" fill="#1b1b2a"/></g>
+<path d="M60 54 L57 64 L63 64" stroke="#B98456" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M49 69 Q60 77 71 69" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+</g>
+</svg>
+</div>
+              <h3>David Guillera</h3>
+              <p class="rol">Entrenador de fuerza</p>
+              <!-- .detalle solo se ve en la ficha activa -->
+              <div class="detalle">
+                <p class="suave">Series, cargas y progresión. Te enseña a levantar con cabeza y a subir de nivel sin prisa.</p>
+                <a class="ver" href="equipo/david-guillera.html">Ver ficha →</a>
+              </div>
+            </article>
+
+            <article class="entrenador">
+              <div class="cara">
+<svg viewBox="0 0 120 120" role="img" aria-label="Cara de Paúl Cebrián">
+<!-- Paul, cardio: pelo de punta, cinta cian, sonrisa abierta y una gota de sudor que cae. -->
+<path d="M8 120 Q12 90 60 88 Q108 90 112 120 Z" fill="#12121f"/>
+<rect x="50" y="76" width="20" height="18" fill="#8A5A36"/>
+<g class="flota rapido">
+<circle cx="33" cy="58" r="6" fill="#A9703F"/><circle cx="87" cy="58" r="6" fill="#A9703F"/>
+<path d="M33 50 Q33 26 60 24 Q87 26 87 50 Q86 78 60 86 Q34 78 33 50Z" fill="#C68642"/>
+<path d="M33 44 L38 22 L47 34 L56 16 L64 34 L74 18 L79 35 L87 24 L87 46 Q60 30 33 46Z" fill="#1b1b2a"/>
+<path d="M32 42 Q60 28 88 42 L88 49 Q60 35 32 49Z" fill="#22D3EE"/>
+<g class="cejas"><path d="M40 45 L55 46" stroke="#1b1b2a" stroke-width="4" stroke-linecap="round"/><path d="M80 45 L65 46" stroke="#1b1b2a" stroke-width="4" stroke-linecap="round"/></g>
+<g class="parpadeo"><ellipse cx="48" cy="52" rx="5" ry="5.5" fill="#fff"/><ellipse cx="72" cy="52" rx="5" ry="5.5" fill="#fff"/><circle cx="49" cy="53" r="2.6" fill="#1b1b2a"/><circle cx="73" cy="53" r="2.6" fill="#1b1b2a"/></g>
+<path d="M60 54 L57 63 L63 63" stroke="#8A5A36" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M46 68 Q60 84 74 68 Z" fill="#5A1E2E"/><path d="M48 69 Q60 73 72 69 L72 70 Q60 75 48 70Z" fill="#fff"/>
+<path class="gota" d="M91 40 q5 8 0 12 q-5 -4 0 -12z" fill="#7DD3FC"/>
+</g>
+</svg>
+</div>
+              <h3>Paúl Cebrián</h3>
+              <p class="rol">Entrenador de cardio</p>
+              <div class="detalle">
+                <p class="suave">Resistencia, ritmo y respiración. Del running al pádel: más aire para cada partida.</p>
+                <a class="ver" href="equipo/paul-cebrian.html">Ver ficha →</a>
+              </div>
+            </article>
+
+            <article class="entrenador">
+              <div class="cara">
+<svg viewBox="0 0 120 120" role="img" aria-label="Cara de Mario Cano">
+<!-- Mario, movilidad: mono, mirada serena, sonrisa tranquila y un aura que late. -->
+<circle class="aura-zen" cx="60" cy="54" r="42" fill="none" stroke="#C4B5FD" stroke-width="3"/>
+<path d="M8 120 Q12 90 60 88 Q108 90 112 120 Z" fill="#12121f"/>
+<rect x="50" y="76" width="20" height="18" fill="#D2A276"/>
+<g class="flota">
+<circle cx="60" cy="16" r="9" fill="#3a2a22"/>
+<circle cx="33" cy="58" r="6" fill="#E6B98F"/><circle cx="87" cy="58" r="6" fill="#E6B98F"/>
+<path d="M33 50 Q33 26 60 24 Q87 26 87 50 Q86 78 60 86 Q34 78 33 50Z" fill="#F1C99B"/>
+<path d="M32 52 Q31 22 60 22 Q89 22 88 52 Q82 34 60 34 Q38 34 32 52Z" fill="#3a2a22"/>
+<g class="cejas"><path d="M40 44 Q47 41 55 45" stroke="#3a2a22" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M80 44 Q73 41 65 45" stroke="#3a2a22" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+<g class="parpadeo lento"><ellipse cx="48" cy="52" rx="5" ry="5.5" fill="#fff"/><ellipse cx="72" cy="52" rx="5" ry="5.5" fill="#fff"/><circle cx="49" cy="53" r="2.6" fill="#1b1b2a"/><circle cx="73" cy="53" r="2.6" fill="#1b1b2a"/></g>
+<path d="M60 54 L58 63 L62 63" stroke="#D2A276" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M51 70 Q60 75 69 70" stroke="#7A3B3B" stroke-width="3" fill="none" stroke-linecap="round"/>
+</g>
+</svg>
+</div>
+              <h3>Mario Cano</h3>
+              <p class="rol">Entrenador de movilidad</p>
+              <div class="detalle">
+                <p class="suave">Rango de movimiento, postura y recuperación. Porque el descanso también puntúa.</p>
+                <a class="ver" href="equipo/mario-cano.html">Ver ficha →</a>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Botones anterior / siguiente -->
+          <div class="carrusel-controles">
+            <button class="carrusel-btn" type="button" data-dir="-1" aria-label="Entrenador anterior">‹</button>
+            <button class="carrusel-btn" type="button" data-dir="1" aria-label="Entrenador siguiente">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACTO ============ -->
+    <section class="contacto" id="contacto">
+      <div class="contenedor">
+        <!-- Título grande con efecto máquina de escribir:
+             data-maquina le dice al JS que lo teclee letra a letra.
+             El texto dentro es el que se escribirá. -->
+        <p class="maquina" data-maquina>Entra a la partida</p>
+
+        <!-- Aquí el título va centrado: x="330" es el centro del lienzo (660 / 2)
+             y text-anchor="middle" centra el texto en ese punto. -->
+        <h2>
+          <svg class="titulo-svg" viewBox="0 0 660 130" role="img" aria-label="Contacto">
+            <text class="trazo" x="330" y="100" text-anchor="middle">CONTACTO</text>
+          </svg>
+        </h2>
+        <p class="subtitulo" data-fade>¿Tu grupo ya entrena junto? Buscamos entre 5 y 10 grupos de amigos para probar XPFit durante 4 semanas.</p>
+        <!-- PENDIENTE: sustituir "#contacto" por el enlace real (mailto: o Telegram). -->
+        <a class="boton" href="#contacto" data-fade>Entra en el juego</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p>© XPFit. Pedimos solo los datos necesarios y los tratamos conforme al RGPD.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
