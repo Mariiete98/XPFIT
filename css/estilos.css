@@ -213,7 +213,9 @@ html.js [data-fade].visible {
     radial-gradient(500px 260px at 0% 100%, rgba(124, 58, 237, .25), transparent);
 }
 /* El H1 es blanco (hereda el color del texto). */
-.hero h1 { color: #fff; margin-bottom: 12px; }
+/* Titular del hero más grande que el H1 normal: hasta 96 px en escritorio
+   (en móvil se adapta al ancho de pantalla con vw). */
+.hero h1 { color: #fff; margin-bottom: 12px; font-size: clamp(2.3rem, 9.5vw, 96px); }
 
 /* La palabra grande con SOLO contorno:
    - color: transparent  -> el relleno desaparece
@@ -221,16 +223,23 @@ html.js [data-fade].visible {
    display:block la baja a una línea propia, debajo del H1. */
 .contorno {
   display: block;
-  font-size: clamp(2.6rem, 14vw, 130px);
+  font-size: clamp(2.6rem, 13vw, 140px);
   font-weight: 600;
   line-height: 1;
   color: transparent;
   -webkit-text-stroke: 2px var(--magenta);
 }
-.hero .subtitulo { max-width: 28em; margin: 20px 0 32px; }
-.hero .nota { margin-top: 24px; font-size: .9rem; color: var(--texto-suave); max-width: 46ch; }
+.hero .subtitulo { max-width: 28em; margin: 14px 0 22px; }
+.hero .nota { margin: 14px 0 0; font-size: .9rem; color: var(--texto-suave); }
+
+/* Botón + nota (izquierda) y LEVEL UP (derecha): dos columnas desde 480 px de
+   ancho. Por debajo, una columna para que el texto no quede apretado. */
+.hero-columnas { display: grid; gap: 18px 28px; grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 480px) {
+  .hero-columnas { grid-template-columns: 1fr 1fr; }
+}
 .levelup {
-  margin-top: 28px; padding: 14px 18px; max-width: 460px;
+  margin: 0; padding: 14px 18px;
   background: var(--panel); border-left: 4px solid var(--magenta); font-size: .95rem;
 }
 
@@ -246,17 +255,19 @@ html.js [data-fade].visible {
 
 /* Sin JS: portada normal, con el texto visible. */
 .hero-escena { position: relative; overflow: hidden; --p: 0; min-height: 100svh; }
-.hero-contenido { position: relative; z-index: 2; padding: 110px 0 80px; }
+/* MARGEN SUPERIOR de 130 px: deja sitio a la cabecera fija para que no tape el título. */
+.hero-contenido { position: relative; z-index: 2; padding: 130px 0 60px; }
 .capa, .hero-aviso { display: none; }       /* las capas decorativas solo existen con JS */
 
 /* Con JS: se activa el parallax. */
-html.js .hero-pista { height: 240vh; }      /* altura "extra" para poder hacer scroll */
+html.js .hero-pista { height: 160vh; }      /* altura "extra" para poder hacer scroll (menos = efecto más corto) */
 html.js .hero-escena {
   position: sticky; top: 0;                 /* se queda pegada arriba mientras haces scroll */
   height: 100svh;
   /* --t = cuánto se ve el texto (0 = nada, 1 = todo).
-     Empieza a aparecer cuando --p supera 0,2 y está completo hacia 0,53. */
-  --t: clamp(0, calc((var(--p) - .2) * 3), 1);
+     Empieza a aparecer en cuanto --p supera 0,05 y está completo en 0,3
+     (con 60 vh de recorrido, eso son unos 18 vh de scroll). */
+  --t: clamp(0, calc((var(--p) - .05) * 4), 1);
 }
 html.js .capa { display: block; position: absolute; inset: 0; pointer-events: none; }
 html.js .hero-aviso { display: block; }
@@ -309,8 +320,12 @@ html.js .hero-aviso { display: block; }
 /* El contenedor del texto ocupa toda la escena y centra su contenido. */
 html.js .hero-contenido {
   height: 100%;
-  display: flex; flex-direction: column; justify-content: center;
+  display: flex; flex-direction: column;
 }
+/* margin-block: auto centra el contenido en la altura disponible, pero si
+   no cabe, se queda pegado ARRIBA (debajo del margen) en vez de salirse por
+   los dos lados: así el título nunca queda tapado por la cabecera. */
+html.js .hero-contenido > .contenedor { margin-block: auto; }
 
 /* El TÍTULO (h1) se ve desde el principio: al cargar la página hace un
    fundido de opacidad (de 0 a 1) durante 1,6 s. "both" = empieza ya
@@ -339,7 +354,7 @@ html.js .hero:not(.contenido-visible) .hero-resto { pointer-events: none; }
 .hero.sin-parallax .hero-escena { position: relative; height: auto; min-height: 0; --t: 1; }
 .hero.sin-parallax .capa-fondo, .hero.sin-parallax .capa-medio, .hero.sin-parallax .mancuerna { transform: none; }
 .hero.sin-parallax .mancuerna, .hero.sin-parallax .hero-aviso { display: none; }
-.hero.sin-parallax .hero-contenido { height: auto; padding: 110px 0 80px; }
+.hero.sin-parallax .hero-contenido { height: auto; padding: 130px 0 60px; }
 .hero.sin-parallax .hero-resto { opacity: 1; transform: none; pointer-events: auto; }
 .hero.sin-parallax h1 { animation: none; }
 @media (prefers-reduced-motion: reduce) {

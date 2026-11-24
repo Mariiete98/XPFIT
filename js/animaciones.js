@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
         heroEscena.style.setProperty("--p", p.toFixed(4));      // se lo damos al CSS
 
         // Cuando el texto ya se ve, permitimos pulsar el botón.
-        hero.classList.toggle("contenido-visible", p > 0.3);
+        hero.classList.toggle("contenido-visible", p > 0.15);
       }
 
       // 7.2 Escuchamos el scroll (y el cambio de tamaño). requestAnimationFrame
